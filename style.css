@@ -189,3 +189,13 @@ body {
 body {
     height: calc(100vh - 0px); /* 基本の高さ */
 }
+
+/* 全体でダブルタップによるズームを禁止 */
+* {
+    touch-action: manipulation;
+}
+
+/* テキスト入力時にズームされないよう、フォントサイズを16px以上にする（iPhoneの仕様対策） */
+input, textarea, select {
+    font-size: 16px !important;
+}
