@@ -200,16 +200,4 @@ input, textarea, select {
     font-size: 16px !important;
 }
 
-/* 全体の背景色を塗りつぶし */
-body {
-    background-color: #7494C0 !important;
-    margin: 0;
-    padding: 0;
-    /* iPhoneの上部の余白（ノッチ部分）を考慮する */
-    padding-top: env(safe-area-inset-top);
-}
 
-/* ホーム画面のヘッダーなどが緑になっていたらここも修正 */
-#home-screen header {
-    background-color: #7494C0 !important;
-}
