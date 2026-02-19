@@ -159,4 +159,21 @@
 /* 入力フォームは最下部に固定 */
 #chat-form {
     flex-shrink: 0;
+
+}
+
+body {
+    /* 画面の高さを100%に固定して、はみ出しを禁止する */
+    height: 100vh;
+    height: -webkit-fill-available; /* iPhoneのツールバーを除いた高さ */
+    overflow: hidden; 
+    position: fixed;
+    width: 100%;
+}
+
+/* メインのコンテンツエリアだけをスクロール可能にする */
+#home-screen, #setup-screen, #talk-screen {
+    height: 100%;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* 指に吸い付くようなスクロール */
 }
