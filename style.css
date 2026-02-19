@@ -1,0 +1,162 @@
+/* 背景色とスクロールバー */
+.line-bg { background-color: #7494C0; }
+::-webkit-scrollbar { width: 0px; }
+
+/* 吹き出しの基本構造 */
+.my-bubble { background-color: #85E249; position: relative; }
+.other-bubble { background-color: #FFFFFF; position: relative; }
+
+/* 吹き出しのしっぽ（疑似要素） */
+.my-bubble::after { 
+    content: ""; position: absolute; top: 10px; right: -8px; 
+    border-left: 10px solid #85E249; border-top: 5px solid transparent; border-bottom: 5px solid transparent; 
+}
+.other-bubble::after { 
+    content: ""; position: absolute; top: 10px; left: -8px; 
+    border-right: 10px solid #FFFFFF; border-top: 5px solid transparent; border-bottom: 5px solid transparent; 
+}
+
+/* ユーティリティ */
+.hidden { display: none; }
+.read-badge { display: none; color: #FFFFFF; font-size: 9px; margin-right: 4px; }
+.read-badge.visible { display: inline; }
+.call-icon { font-size: 1.1rem; vertical-align: middle; margin-right: 6px; }
+
+/* プレビューエリア */
+#preview-list {
+    background-color: #7494C0;
+    border-radius: 16px;
+    padding: 20px 12px;
+    min-height: 150px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+}
+
+/* アニメーション */
+@keyframes slideUp { 
+    from { transform: translateY(100%); } 
+    to { transform: translateY(0); } 
+}
+.animate-slide-up { animation: slideUp 0.25s ease-out; }
+
+.memo-item:active { background-color: #f3f4f6; }
+
+/* --- ホーム画面全体の背景 --- */
+#home-screen {
+    background-color: #f0f5f0; /* 少しグレーがかった白でカードを際立たせる */
+}
+
+/* --- ホームのヘッダー --- */
+#home-screen header {
+    background: #06C755; /* LINEカラーのグリーンを背景に */
+    padding: 1.5rem 1rem;
+    border-bottom: none;
+}
+.signature {
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-family: 'Dancing Script', cursive; /* 手書き風フォント（読み込めない場合は少し斜体になる） */
+    font-size: 11px;
+}
+
+/* --- LIMEロゴの修正版 --- */
+.lime-logo {
+    color: white !important;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.15);
+    /* 太字ゴシック + ちょいデカ */
+    font-family: 'Arial Black', 'Helvetica Black', sans-serif;
+    font-size: 1.5rem; /* サイズを大きく */
+    font-weight: 900; /* 極太 */
+    letter-spacing: 0.1em; /* 文字間隔を少し調整 */
+}
+
+/* --- 履歴リストのカードデザイン --- */
+#history-list {
+    padding: 10px 0;
+}
+
+#history-list .memo-item {
+    background: white;
+    margin: 12px 16px;
+    padding: 18px;
+    border-radius: 20px; /* ぷっくりした角丸 */
+    border: none;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+}
+
+/* カードの左側にグリーンのアクセントライン */
+#history-list .memo-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 6px;
+    background-color: #06C755;
+}
+
+#history-list .memo-item:active {
+    transform: scale(0.96); /* 押した時にへこむ演出 */
+    background-color: #f9f9f9;
+}
+
+/* 履歴内のテキスト */
+#history-list .memo-item .font-bold {
+    color: #111;
+    font-size: 1.05rem;
+    margin-bottom: 4px;
+}
+
+#history-list .memo-item .text-gray-500 {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* --- 新規作成ボタン（右下固定のフローティング風） --- */
+#home-screen .flex.justify-end {
+    background: transparent;
+    border-top: none;
+    position: absolute;
+    bottom: 20px;
+    right: 10px;
+    padding: 0;
+}
+
+#home-screen .flex.justify-end button {
+    background: #06C755;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 30px;
+    box-shadow: 0 8px 20px rgba(6, 199, 85, 0.3);
+    transition: all 0.3s ease;
+}
+
+#home-screen .flex.justify-end button span {
+    color: white; /* 絵文字の色調整 */
+}
+
+#home-screen .flex.justify-end button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(6, 199, 85, 0.4);
+}
+
+/* トーク画面全体を画面の高さぴったりに固定 */
+#talk-screen {
+    height: 100vh;
+    height: -webkit-fill-available; /* モバイルブラウザ対策 */
+}
+
+/* メッセージエリアだけをスクロール可能に */
+#chat-box {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch; /* 指に吸い付くスクロール */
+}
+
+/* 入力フォームは最下部に固定 */
+#chat-form {
+    flex-shrink: 0;
+}

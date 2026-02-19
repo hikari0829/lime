@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIME - Chat Simulator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="/manifest.json">
+</head>
+<body class="bg-[#F6F6F6] h-screen flex flex-col font-sans text-sm overflow-hidden text-[#333]">
+
+    <div id="home-screen" class="flex-1 flex flex-col bg-[#f0f2f5]">
+        <header class="p-4 flex justify-between items-end">
+            <div class="w-12"></div> 
+            <div class="flex items-baseline justify-center flex-1">
+                <h1 class="lime-logo">LIME</h1>
+                <span class="signature ml-2">by Hikari Watanabe</span>
+            </div>
+            <div class="w-12"></div>
+        </header>
+        
+        <main id="history-list" class="flex-1 overflow-y-auto"></main>
+
+        <div class="flex justify-end p-6 bg-transparent">
+            <button onclick="startNewProject('personal')" class="flex items-center text-white bg-[#06C755] font-bold text-lg px-6 py-3 rounded-full shadow-lg active:scale-95 transition">
+                <span class="text-2xl mr-2">📝</span> 新規作成
+            </button>
+        </div>
+    </div>
+
+    <div id="setup-screen" class="hidden flex-1 flex flex-col overflow-y-auto pb-32">
+        <header class="bg-white p-4 border-b flex justify-between items-center sticky top-0 z-30 shadow-sm">
+            <button onclick="saveAndGoHome()" class="text-[#06C755] font-bold">＜ 戻る</button>
+            <input type="text" id="project-title" class="font-bold text-center border-b border-gray-200 focus:border-[#06C755] outline-none w-1/2" value="無題の台本">
+            <button onclick="deleteCurrentProject()" class="text-red-400 text-[10px] border border-red-200 px-2 py-1 rounded">削除</button>
+        </header>
+        
+        <div class="p-4 space-y-4">
+            <div class="bg-white p-4 rounded-2xl shadow-md space-y-3 border-t-4 border-[#06C755]">
+                <h3 class="font-bold text-gray-700 text-[10px] uppercase tracking-wider">相手役の設定</h3>
+                <div class="flex items-center space-x-4">
+                    <img id="setup-b-icon-preview" src="https://picsum.photos/100" class="w-16 h-16 rounded-full object-cover border">
+                    <div class="flex-1 space-y-2">
+                        <input type="text" id="setup-b-name" class="w-full border-b p-1 outline-none font-bold" value="B">
+                        <input type="file" id="setup-b-icon-file" class="text-[10px]" accept="image/*">
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-white rounded-2xl shadow-md">
+                <div id="sticker-list" class="flex flex-wrap gap-2 mb-2"></div>
+                <input type="file" id="sticker-upload" class="hidden" accept="image/*" multiple onchange="handleStickerUpload(this)">
+                <button onclick="document.getElementById('sticker-upload').click()" class="w-full py-2 bg-gray-100 text-[10px] rounded-lg">＋ スタンプ画像を登録</button>
+            </div>
+
+            <div class="bg-white p-4 rounded-2xl shadow-md space-y-4">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-gray-400 uppercase">メッセージ追加</span>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="setup-is-wait" class="w-4 h-4">
+                        <label for="setup-is-wait" class="text-[10px] font-bold text-red-600 italic">⏱時差を再現</label>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <select id="setup-type" class="border-b pb-1 outline-none bg-transparent" onchange="toggleTypeFields()">
+                        <option value="text">💬 テキスト</option>
+                        <option value="sticker">🎨 スタンプ</option>
+                        <option value="media">🖼 画像・動画</option>
+                        <option value="call">📞 通話履歴</option>
+                        <option value="ignore">😶 既読スルー</option>
+                    </select>
+                    <select id="setup-side" class="border-b pb-1 outline-none bg-transparent font-bold">
+                        <option value="right">自分 (A)</option>
+                        <option value="left">相手 (B)</option>
+                    </select>
+                </div>
+
+                <div id="field-text"><textarea id="setup-text" class="w-full bg-gray-50 p-2 rounded outline-none min-h-[60px]" placeholder="内容を入力"></textarea></div>
+                <div id="field-media" class="hidden"><input type="file" id="setup-media-file" class="w-full text-xs" accept="image/*,video/*"></div>
+                <div id="field-sticker" class="hidden">
+                    <div id="setup-sticker-select" class="flex flex-wrap gap-2 max-h-32 overflow-y-auto bg-gray-50 p-2 rounded border">
+                        <p class="text-[10px] text-gray-400 w-full">登録済みスタンプから選択：</p>
+                    </div>
+                </div>
+                <div id="field-call" class="hidden flex space-x-2 bg-gray-50 p-2 rounded">
+                    <select id="setup-call-type" class="flex-1 bg-transparent outline-none text-xs" onchange="toggleCallTimeField()">
+                        <option value="不在着信">不在着信</option>
+                        <option value="キャンセル">キャンセル</option>
+                        <option value="通話終了">通話終了</option>
+                    </select>
+                    <input type="text" id="setup-call-time" class="hidden flex-1 border-b text-xs outline-none" placeholder="時間 (例 5:20)">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3 items-end">
+                    <input type="time" id="setup-time" class="border-b outline-none bg-transparent" value="10:00">
+                    <button id="add-btn" onclick="addOrUpdateScenario()" class="bg-[#06C755] text-white py-2 rounded-lg font-bold shadow-md active:scale-95 transition">追加 / 更新</button>
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <h3 class="text-[10px] font-bold text-gray-400 px-2 uppercase tracking-tighter">トーク内容確認 (プレビュー)</h3>
+                <div id="preview-list" class="space-y-4"></div>
+            </div>
+        </div>
+        <button id="start-btn" onclick="startTalk()" class="fixed bottom-6 left-6 right-6 bg-[#06C755] text-white py-4 rounded-full font-bold shadow-2xl hidden z-20 active:scale-95 transition">本番トーク開始</button>
+    </div>
+
+    <div id="talk-screen" class="hidden h-full flex flex-col line-bg relative overflow-hidden">
+        <header class="bg-[#273246] text-white p-3 flex items-center justify-between shadow-md z-10">
+            <div class="flex items-center"><span onclick="backToSetup()" class="mr-4 cursor-pointer">＜</span><h1 id="header-name" class="font-bold text-base">B</h1></div>
+            <div class="text-xl">🔍 📞 ≡</div>
+        </header>
+        <main id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 pb-20"></main>
+        <form id="chat-form" class="bg-white p-3 flex items-center border-t z-10 sticky bottom-0">
+            <button type="button" onclick="document.getElementById('talk-media-file').click()" class="mr-2 text-2xl opacity-50">🖼️</button>
+            <input type="file" id="talk-media-file" class="hidden" accept="image/*,video/*" onchange="handleTalkMediaUpload(this)">
+            <button type="button" onclick="toggleStickerPanel()" class="px-2 text-xl">😊</button>
+            <div id="sticker-panel" class="hidden absolute bottom-16 left-0 w-full bg-white border-t p-4 flex flex-wrap gap-4 z-50 overflow-y-auto" style="max-height: 200px;"></div>
+            <input type="text" id="user-input" class="flex-1 bg-gray-100 rounded-full px-4 py-2 outline-none" placeholder="メッセージを入力">
+            <button type="submit" class="ml-3 text-[#06C755] font-bold active:opacity-50">送信</button>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
