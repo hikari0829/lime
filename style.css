@@ -177,3 +177,15 @@ body {
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; /* 指に吸い付くようなスクロール */
 }
+
+/* iPhoneの入力補助バー対策 */
+#chat-form {
+    /* フォームを少しだけ上に浮かせて、ツールバーと重なりにくくする */
+    padding-bottom: env(safe-area-inset-bottom);
+    background-color: white;
+}
+
+/* それでも出る場合は、高さを計算して強制的に調整 */
+body {
+    height: calc(100vh - 0px); /* 基本の高さ */
+}
